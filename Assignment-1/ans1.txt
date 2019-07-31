@@ -1,0 +1,111 @@
+Kanisha Shah
+UID: 504-958-165
+
+Laborartory:
+
+1. man -k keyword/Users/kanishashah/Desktop/Winter'18/CS 35L/Assignment-1/ans1.txt
+   I found the answer in the Linux commands handout.
+
+2. cp: /usr/local/cs/bin/cp
+   wc: /usr/local/cs/bin/wc
+   I used command man -k locate to find "which" and "whereis" command.
+
+3. To get one character long executable programs, I used the command:
+   find /usr/bin -name "?"
+   After getting the results, use "man command" to find the description.
+   w: Show who is logged on and what they are doing.
+   [: Used for evaluating expressions.
+
+4. /etc/alternatives/emacs
+   cd /usr/bin
+   ls -l
+   When we find emac, we can see the actual file that is being executed.
+
+5. g+s means that groups can set group ID on execution
+   o-x means that other users cannot execute.
+
+6. -mtime  -21
+   I used "man find" and then "/modif Enter" to find the option.
+
+7. find / -type d -mtime  -21
+   I used man find page to find answers.
+
+8. which find (That prints /usr/bin/find)
+   cd /usr/bin
+   ls -l | grep ^l | wc
+   This finds all the listings starting with l (indicating symbolic links) and put it in wc.
+   There were 102 symbolic links.
+
+9. cd /usr/bin
+   ls -lat
+   The last one would bethe  oldest file modified as the command prints out the newest first.
+
+10. I used:
+    man locale
+    man localedef
+    locale command gets its data from the environment variables.
+
+11. Used C-h a and entered "sort" to find command using sort in emacs
+
+Buffer-menu-sort              M-x ... RET
+  Command: Sort the buffer menu by COLUMN.
+Buffer-menu-sort-by-column    M-x ... RET
+  Command: Sort the buffer menu by the column clicked on.
+ibuffer-invert-sorting        M-x ... RET
+  Command: Toggle whether or not sorting is in reverse order.
+ibuffer-toggle-sorting-mode   M-x ... RET
+  Command: Toggle the current sorting mode.
+rmail-sort-by-author          M-x ... RET
+  Command: Sort messages of current Rmail file by author.
+rmail-sort-by-correspondent   M-x ... RET
+  Command: Sort messages of current Rmail file by other correspondent.
+rmail-sort-by-date            M-x ... RET
+  Command: Sort messages of current Rmail file by date.
+rmail-sort-by-labels          M-x ... RET
+  Command: Sort messages of current Rmail file by labels.
+rmail-sort-by-lines           M-x ... RET
+  Command: Sort messages of current Rmail file by number of lines.
+rmail-sort-by-recipient       M-x ... RET
+  Command: Sort messages of current Rmail file by recipient.
+rmail-sort-by-subject         M-x ... RET
+  Command: Sort messages of current Rmail file by subject.
+sort-columns                  M-x ... RET
+  Command: Sort lines in region alphabetically by a certain range of columns.
+
+
+12. I used command C-h k <keystrokes needed (example: C-M-a)> to find the functions.
+
+    C-M-a runs the command beginning-of-defun. It is used to move backward to the beginning of a defun.
+
+    C-M-b runs the command backward-sexp. It is used to move backward across one balanced expression (sexp).
+    
+    C-M-c runs the command exit-recursive-edit. It exits from the innermost recursive edit or minibuffer.
+    
+    C-M-d runs the command down-list. It is used to move forward down one level of parentheses.
+
+    C-M-e runs the command end-of-defun. It is used to move forward to next end of defun.
+    
+    C-M-f runs the command forward-sexp. It is used to move forward across one balanced expression (sexp).
+
+    C-M-g does not exit.
+
+    C-M-h runs the command mark-defun. It is used to put mark at end of this defun, point at beginning. The defun marked is the one that contains point or follows point.
+
+
+13. I went through emacs tutorial to find answer.
+    If Emacs stops responding to commands, it can be stopped by typing C-g.
+    You can also use C-g to discard a numeric argument or the beginning of a command that you do not want to finish.
+
+14. I went through emacs tutorial to find answer.
+    Emacs yank function: C-y brings bank whatever has been killed.
+    It reinserts the last killed text, at the current cursor position.
+
+15. C-h a dired
+    C-x d
+    C-x C-c
+    ls 
+    Dired command lists the file . and .. but ls -l does not lists them:
+    drwxr-xr-x  3 kanisha csugrad 4096 Jan 13 16:38 .
+    drwx------ 11 kanisha csugrad 4096 Jan 13 16:53 ..
+
+   

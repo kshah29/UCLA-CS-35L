@@ -1,0 +1,57 @@
+Kanisha Shah
+504-958-165
+
+Lab:
+
+Check the version of sort:
+$ sort --version
+sort (GNU coreutils) 8.29
+Copyright (C) 2017 Free Software Foundation, Inc.
+License GPLv3+: GNU GPL version 3 or later <https://gnu.org/licenses/gpl.html>.
+This is free software: you are free to change and redistribute it.
+There is NO WARRANTY, to the extent permitted by law.
+
+Written by Mike Haertel and Paul Eggert.
+
+- This is a new version.
+
+
+To make a file contaning 10,000,000 random single-precision floating point numbers
+each on a seperate line, we use the following command:
+od -t f4 /dev/urandom | cut -c 10- | sed "s/ \n*  */\n/g" | sed "s/  */\n/g" | sed '/^$/d' | head -n 10000000 > file
+
+od -t f4 shows every character as floating point of 4 bytes (single precision), whose input is /dev/urandom
+cut -c 10- cuts first 10 chracters of each line, it will delete the numbers added by od
+sed "s/ \n*  */\n/g" replaces combination of SP\n*SPSP* with \n, this will leave single spaces
+sed "s/  */\n/g" replaces 1 or more space with \n (newline)
+sed '/^$/d' deletes extra newlines
+head -n 10000000 gives first 10000000 lines 
+The final output is stored in file
+
+Timing sort when sorted numerically and using multithreads (1, 2, 4, and 8)
+
+1 thread: 
+time -p sort -g --parallel=1 file > time_sort
+real 123.20
+user 118.08
+sys 0.41
+
+2 threads:
+real 62.43
+user 116.26
+sys 0.63
+
+4 threads:
+real 37.08
+user 117.04
+sys 1.42
+
+8 threads:
+time -p sort -g --parallel=8 file > time_sort
+real 33.45
+user 145.12
+sys 3.50
+
+
+
+

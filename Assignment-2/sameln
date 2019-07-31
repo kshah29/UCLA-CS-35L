@@ -1,0 +1,115 @@
+#!/bin/bash
+
+#stores the path of the directory into dir
+dir=$1
+
+
+#variable files stores all the files in the directory dir 
+#variable hidden stores all the hidden files 
+files=`ls $dir | sort  > Nfiles`
+hidden=`ls -a $dir | grep "^\." | sort > Nhidden`
+
+
+#filenum stores total number of files
+#hidnum stores total number of hidden files 
+filenum=`wc -l Nfiles | cut -d ' ' -f 1`
+hidnum=`wc -l Nhidden | cut -d ' ' -f 1`
+
+
+
+
+#this while loop deletes all the files which are not
+#regular from the files 
+findex=1 #line in the file
+while [ $findex -le $filenum ] #goes through every line in the file
+do
+    #stores the (findex)th line in the file
+    temp=`head -$findex Nfiles|tail -1` 
+    `test -f $temp` #command checks if the file is a regular file
+    isfile=`echo $?` #store the boolean value of the command
+
+    if ! [ $isfile -eq 0 ] #if the value is 1, delete that line
+    then
+	#deletes (findex)th line in the file and store into tmp
+	`sed "${findex}d" Nfiles > temp`
+	#copies tmp into the original file 
+	`cp temp Nfiles`
+	findex=$(($findex - 1 ))
+	filenum=$(($filenum - 1 ))
+	echo "deleted"
+    fi
+    
+    findex=$(($findex + 1 ))
+done
+
+
+
+
+#this while lo loop deletes all the files which are not
+#regular from the hidden 
+findex=1 #line in the file
+while [ $findex -le $hidnum ] #goes through every line in the file
+do
+    #stores the (findex)th line in the file
+    temp=`head -$findex Nhidden|tail -1` 
+    `test -f $temp` #command checks if the file is a regular file
+    isfile=`echo $?` #store the boolean value of the command
+
+    if ! [ $isfile -eq 0 ] #if the value is 1, delete that line
+    then
+	#deletes (findex)th line in the file and store into tmp
+	`sed "${findex}d" Nhidden > temp`
+	#copies tmp into the original file 
+	`cp temp Nhidden `
+        findex=$(($findex - 1 ))
+        hidnum=$(($hidnum - 1 ))
+    fi
+
+    findex=$(($findex + 1 ))
+done
+
+
+
+
+# it copies all the hidden files and then the others 
+# into a new file: all 
+`cp Nhidden all`
+`cat Nfiles >> all`
+echo "Total files: "
+allnum=$(($hidnum + $filenum))
+#calculates and prints total number of regular files
+echo $allnum
+
+
+
+
+# this nested while loop goes through each pair of files 
+# in the directory and checks if they are equal 
+# If they are they set the second occurrence of the file 
+# as the hardlink to the first file
+findex=1 #line in file
+while [ $findex -le $allnum ]
+do
+    #stores the (findex)th line in the file 
+    f1=`head -$findex all|tail -1` 
+    fnext=$(($findex + 1))
+
+    while [ $fnext -le $allnum ]
+    do
+	#stores the (fnext)th line in the file
+	f2=`head -$fnext all|tail -1` 
+	#comparing 2 files using cmp
+	`cmp -s "${f1}" "${f2}"`
+	isequal=`echo $?`
+
+	if [ $isequal -eq 0 ]
+	then
+	    # it sets the f2 as the hardlink of f1 as both are same files
+	    `ln -f "${f1}" "${f2}"`
+	fi
+
+	fnext=$(($fnext + 1))
+    done
+
+   findex=$(($findex + 1 )) 
+done  

@@ -1,0 +1,179 @@
+Kanisha Shah
+UID: 504-958-165
+
+Laborartory:
+
+I used command: l o c a l e and found that output LC_CTYPE is not C or POSIX.
+I used command: e x p o r t SP L C _ A L L = ' C ' to fix this.
+
+To store the sorted list of words we first go to our working directory,
+sort the list in the file and then store the sorted list in the new file words.
+c d SP C S 3 5 L / l a b 2
+s o r t SP / u s r / s h a r e / d i c t / w o r d s SP > SP w o r d s
+
+To download the html file of the assignment's webpage, we can use wget command:  
+wget http://web.cs.ucla.edu/classes/winter18/cs35L/assign/assign2.html
+This will form a file assign2.html in the directory.
+To form a copy of the text file for future, we use the command:
+cp assign2.html assign.txt
+
+To find out what each command does we type in the command and see the results.
+
+tr -c 'A-Za-z' '[\n*]' < assign.txt
+It takes input from the assign.txt file for tr (transform command).
+Option c here transforms every character which is not a letter
+into a new line character (\n).
+We use the delimeters '' so that it can preserve the meaning of
+the text inside and does not treat it like a string. 
+
+
+tr -cs 'A-Za-z' '[\n*]' < assign.txt
+This command works like the previous command except that it removes all
+the extra lines. This essentially converts multiple new line characters
+into a single new line character.
+
+
+tr -cs 'A-Za-z' '[\n*]' < assign.txt | sort
+This command takes the result of the previous command as input (stdin),
+sorts it and prints it on the screen.
+
+
+tr -cs 'A-Za-z' '[\n*]' < assign.txt | sort -u
+This command works like the previous command except that it prints a word
+only once. The option u of sort works like a uniq command.
+
+
+tr -cs 'A-Za-z' '[\n*]' < assign.txt | sort -u | comm - words
+I first typed man comm to find out what the command does and then
+typed the above command. In this command we are passing std output
+of previous command as input for command comm using ‘-‘ . We then
+compare ‘-‘ with file words and print unique lines in ‘-‘  as
+column 1, unique lines in words as column 2 and common lines in ‘-‘ and words as column 3. 
+
+
+tr -cs 'A-Za-z' '[\n*]' < assign.txt | sort -u | comm -23 - words
+By seeing manual page of comm. I figured out that option 2 and 3,
+does not show show columns 2 and 3. It would only show 1st column.
+This command works like the previous command expect that it shows
+1st column only: the list of words unique to file 1: ‘-‘ obtained from assign.txt. 
+
+
+I used the command wget http://mauimapp.com/moolelo/hwnwdseng.htm
+to obtain the html file hwnwdseng.htm
+For easier naming convention, I used the following command:
+cp hwnwdseng.htm hw.txt
+
+I then underwent the following steps to create buildwords
+that would create a hawaiian dictionary:
+
+#!/bin/bash
+#This is the first line of the file.
+#This indicates the location of the bash file. 
+
+#As all the hawaiian words are in following pattern:
+#<td>Hword</td>, I isolated this pattern using:
+grep '<td>.*</td>' |
+#This will isolate: <td>hword</td> and <td>eword</td>
+
+tr "A-Z\`"  "a-z\'" |
+#changes all the lowercase lettes to upper case letters
+# and okina(`) to '
+
+sed "s/<td>/\n/g" |
+#Replaces all <td> with new lines
+
+sed "s/<.\{1,2\}>//g" |
+#Deletes <u> and </u>
+
+sed "s/<.\{1,3\}>/\n/g" |
+#Replaces all </td> with new lines
+
+sed "s/<font .*font>/\n/g" |
+#Replaces the above pattern
+#<font.....</font> with new lines
+
+sed "s/<small.*small>/\n/g" |
+#Replaces the above pattern
+#<small.....<small> with new lines
+
+sed "s/, /\n/g" |
+#Replaces pattern ,SP with new line
+#It will put 2 seperated words on different lines
+
+sed "s/(.*)/\n/g" |
+#Replaces words in paranthesis by newline
+
+sort -u |
+#Sorts all the lines and prints a line once
+
+comm -23 - words |
+#Compares the lines of input  with the lines file words
+#and prints the lines unique to the input
+
+grep "^[pk\' mnwlhaeiou]\{1,\}$"
+#Prints only those words that are formed by the
+#Hawaiian letters. This eliminates left-over
+#English words. 
+
+
+We now assign permission to execute the file:
+chmod u=rwx buildwords
+
+To run the file, and store it in the
+Hawaiian dictionary, I type following command:
+cat hw.txt | ./buildwords > hwords
+
+
+Checking the misspelled words:
+Type the following command for each category:
+
+
+English misspelled words:
+tr -cs 'A-Za-z' '[\n*]' < assign2.html | tr 'A-Z' 'a-z' | sort -u | comm -23 - words | wc -w
+The command displays:
+38
+misspelled words Examples:
+toc
+ul
+usr
+utf
+vandebogart
+wget
+wiki
+wikipedia
+www
+
+
+Hawaiian Misspelled words:
+tr "A-Z\`"  "a-z\'" < assign2.html | tr -cs "pk\'mnwlhaeiou" '[\n*]' | sort -u | comm -23 - hwords | wc -w
+The command displays: 208
+mispelled Hawaiian words Examples:
+we
+wh
+wha
+whe
+whi
+who
+wi
+wikipe
+wo
+www
+
+
+Misspelled English but not Hawaiian:
+tr -cs 'A-Za-z' '[\n*]' < assign2.html | tr 'A-Z' 'a-z' | sort -u | comm -23 - words | tr -cs "pk\'mnwlhaeiou" '[\n*]' | sort -u | comm -12 - hwords
+Examples:
+halau
+wiki
+
+
+Misspelled Hawaiian but not English:
+tr "A-Z\`"  "a-z\'" < assign2.html | tr -cs "pk\'mnwlhaeiou" '[\n*]' | sort -u | comm -23 - hwords | tr -cs 'A-Za-z' '[\n*]' | sort -u | comm -12 - words
+Examples:
+wan
+we
+wh
+wha
+who
+wi
+

@@ -1,0 +1,121 @@
+Kanisha shah
+504-958-165
+
+Laboratory:
+
+
+1. and 2. are done in tr2b.c and tr2u.c. 
+
+
+3. First, I made a file having 6,069,472 bytes.
+
+Comparing (a) when copying one file to another
+for tr2b.c and tr2u.c:
+
+cat file.txt | strace -c ./tr2b abc ABC > out_tr2b
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 50.86    0.000973           1       741           write
+ 49.14    0.000940           1      1484           read
+  0.00    0.000000           0         2           open
+  0.00    0.000000           0         2           close
+  0.00    0.000000           0         4           fstat
+  0.00    0.000000           0         9           mmap
+  0.00    0.000000           0         4           mprotect
+  0.00    0.000000           0         1           munmap
+  0.00    0.000000           0         1           brk
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00    0.001913                  2251         1 total
+
+cat file.txt | strace -c ./tr2u abc ABC > out_tr2u
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 58.01   38.990673           6   6069472           write
+ 41.99   28.227006           5   6069474           read
+  0.00    0.000000           0         2           open
+  0.00    0.000000           0         2           close
+  0.00    0.000000           0         2           fstat
+  0.00    0.000000           0         7           mmap
+  0.00    0.000000           0         4           mprotect
+  0.00    0.000000           0         1           munmap
+  0.00    0.000000           0         1           brk
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00   67.217679              12138968         1 total
+
+Total number of system calls for unbuffered I/O is much greater than
+buffered I/O. 
+
+Now, we will compare (b) when copying a file to terminal
+for tr2b.c and tr2u.c
+
+cat file.txt | strace -c ./tr2b abc ABC
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 98.57    0.985820          10     97785           write
+  1.41    0.014078           9      1484           read
+  0.01    0.000081          20         4           mprotect
+  0.01    0.000057          57         1           munmap
+  0.01    0.000056           6         9           mmap
+  0.00    0.000022           6         4           fstat
+  0.00    0.000013          13         1           arch_prctl
+  0.00    0.000010           5         2           close
+  0.00    0.000000           0         2           open
+  0.00    0.000000           0         1           brk
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+------ ----------- ----------- --------- --------- ----------------
+100.00    1.000137                 99295         1 total
+
+cat file.txt | strace -c ./tr2u abc ABC
+% time     seconds  usecs/call     calls    errors syscall
+------ ----------- ----------- --------- --------- ----------------
+ 57.51   36.015859           6   6069472           write
+ 42.49   26.605181           4   6069474           read
+  0.00    0.000000           0         2           open
+  0.00    0.000000           0         2           close
+  0.00    0.000000           0         2           fstat
+  0.00    0.000000           0         7           mmap
+  0.00    0.000000           0         4           mprotect
+  0.00    0.000000           0         1           munmap
+  0.00    0.000000           0         1           brk
+  0.00    0.000000           0         1         1 access
+  0.00    0.000000           0         1           execve
+  0.00    0.000000           0         1           arch_prctl
+------ ----------- ----------- --------- --------- ----------------
+100.00   62.621040              12138968         1 total
+
+
+Just like the previous case, buffered version has lesser system
+calls compared to the unbuffered one.
+
+Writing output to a file or terminal did not make any difference in
+the number of system calls for the unbuffered version. But, writing
+output on the terminal increased the number of system calls for write
+significantly for the buffered version.
+
+
+
+4. Comparing time for both the versions :
+
+Buffered I/O:
+cat file.txt | time -p ./tr2b abc ABC > out_tr2b
+real 0.23
+user 0.15
+sys 0.01
+
+Unbuffered I/O:
+cat file.txt | time -p ./tr2u abc ABC > out_tr2u
+real 11.27
+user 1.62
+sys 9.59
+
+Clearly, the unbuffered I/O takes more time than buffered I/O
+as it makes more system calls. 
+
+

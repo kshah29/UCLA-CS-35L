@@ -1,0 +1,206 @@
+Kanisha shah
+504-958-165
+
+Laboratory:
+
+1. I type this command in my terminal to upload the tar file
+in my computer to my working directory on seas.ucla server.
+scp coreutils-with-bug.tar kanisha@lnxsrv09.seas.ucla.edu:~/
+
+
+2. After that I moved my tar file to a new directory lab4 using
+mv coreutils-with-bug.tar CS35L/lab4/
+
+I unzipped the file using:
+tar xf coreutils-with-bug.tar
+
+
+3. To build this version of coreutils, I followed following steps:
+cd coreutils-with-bug/
+./configure --prefix=/u/cs/ugrad/kanisha/CS35L/lab4/coreutils-with-bug
+make
+
+When we make, the following error pops up:
+In file included from utimecmp.c:41:0:
+utimens.h:2:5: error: conflicting types for 'futimens'
+ int futimens (int, char const *, struct timespec const [2]);
+     ^~~~~~~~
+In file included from utimecmp.h:25:0,
+                 from utimecmp.c:25:
+/usr/include/sys/stat.h:373:12: note: previous declaration of 'futimens' was here
+ extern int futimens (int __fd, const struct timespec __times[2]) __THROW;
+
+The function futimens have different declaration and definition at two
+different places. The number of arguments is not same for them.
+
+
+4. We store the patches of the files in lib inside a patchfile in lib directory.
+#create patchfile
+Now, we apply the patch:
+patch < patchfile
+This patched all the files in the lib directory. Now, we go to src directory and
+create a patchfile to store the patches for the files in src.
+cd ../src
+#create	patchfile
+Now, we apply the patch:
+patch < patchfile
+
+
+5. Now, that we have patched all the files as per renaming patch, we build it again:
+cd ../
+make
+echo $? #printed "0" -> No errors
+
+
+6. Now, we reproduce the bug:
+tmp=$(mktemp -d)
+cd $tmp
+touch -d '1918-11-11 11:00 GMT' wwi-armistice
+touch now
+sleep 1
+touch now1
+TZ=UTC0 ~/CS35L/lab4/coreutils-with-bug/src/ls -lt --full-time wwi-armistice now now1
+#This would print:
+-rw-r--r-- 1 kanisha csugrad 0 1918-11-11 11:00:00.000000000 +0000 wwi-armistice
+-rw-r--r-- 1 kanisha csugrad 0 2018-02-09 21:50:50.971932234 +0000 now1
+-rw-r--r-- 1 kanisha csugrad 0 2018-02-09 21:50:36.843695787 +0000 now
+
+
+7. This tells us that the bug is in t option of ls. So we try to fix that.
+If we search ls.c for '-t', it will bring us to sort_time in an enum.
+We then search for sort_time, that brings us to a switch case functionality
+for different kinds of times. We specifically care about modification time.
+We then look for compare_mtime as that would be used for time_mtime.
+
+I will use gdb to pinpoint the source
+gdb ~/CS35L/lab4/coreutils-with-bug/src/ls
+
+Now, I will set breakpoint at func = sort_reverse ? rev_cmp_mtime : compare_mtime; and
+func = sort_reverse ? rev_str_mtime : compstr_mtime;
+#I set the breakpint at line 2974 and 3010, 3263, 2883
+  b 2974
+  b 3010
+  b 3263
+  b 2883
+#Now we run it
+  run -lt
+
+By using s (step) we can see that line 3010 and 3263 is not used.
+
+#We will study breakpoints at 2883 and 2974 individually.
+#This time I set breakpoint at 2883 to observe
+b 2883
+run -lt now now1 wwi-armistice
+
+#I use s and info locals to understand how it works:
+compare_mtime (a=0x6170e0, b=0x617190) at ls.c:2884
+2884	static int compare_mtime (V a, V b) { return cmp_mtime (a, b, xstrcoll); }
+(gdb) info locals
+No locals.
+(gdb) s
+cmp_mtime (cmp=0x4045f0 <xstrcoll>, b=0x617190, a=0x6170e0) at ls.c:2884
+2884	static int compare_mtime (V a, V b) { return cmp_mtime (a, b, xstrcoll); }
+(gdb) info locals
+diff = <optimized out>
+diff = <optimized out>
+(gdb) s
+timespec_cmp (b=..., a=...) at ../lib/timespec.h:48
+48	  int diff = a.tv_sec - b.tv_sec;
+(gdb) list
+43	/* Return negative, zero, positive if A < B, A == B, A > B, respectively.
+44	   Assume the nanosecond components are in range, or close to it.  */
+45	static inline int
+46	timespec_cmp (struct timespec a, struct timespec b)
+47	{
+48	  int diff = a.tv_sec - b.tv_sec;
+49	  return diff ? diff : a.tv_nsec - b.tv_nsec;
+50	}
+51	
+52	# if ! HAVE_DECL_NANOSLEEP
+(gdb) info locals
+diff = <optimized out>
+diff = <optimized out>
+(gdb) s
+49	  return diff ? diff : a.tv_nsec - b.tv_nsec;
+(gdb) info locals
+diff = -1162919061
+diff = <optimized out>
+
+#It printed this at the end 
+
+-rw-r--r-- 1 kanisha csugrad 0 1918-11-11 03:00 wwi-armistice
+-rw-r--r-- 1 kanisha csugrad 0 2018-02-09 18:22 now1
+-rw-r--r-- 1 kanisha csugrad 0 2018-02-09 18:21 now
+[Inferior 1 (process 16265) exited normally]
+
+Here, it is showing the correct order for now and now1. But it is
+showing the wrong order for wwi-armistice. The value of diff is very large
+and negative. They are subtracting one file's date in nanoseconds from another.
+The comment says:
+Return negative, zero, positive if A < B, A == B, A > B, respectively.
+Assume the nanosecond components are in range, or close to it.
+
+It seems that there was an overflow. File from 2016 would have far larger number
+of nanoseconds compared to file from 1918.
+
+
+8. Now that we have found the bug it is time to fix it.
+Instead of subtracting value, we can simply compare the values
+First I will copy timespec.h into my working directory and do the necessary
+changes.
+
+cp ~/CS35L/lab4/coreutils-with-bug/lib/timespec.h ~/CS35L/lab4/
+
+We can rewrite timespec_cmp function as,
+  if (a.tv_sec > b.tv_sec) return 1;
+  else if (a.tv_sec < > b.tv_sec) return -1 ;
+  else return 0	;
+
+Now, we create the patch file using the following diff command:
+diff -u coreutils-with-bug/lib/timespec.h timespec.h > patch.diff
+
+
+9. Now, we apply the patch and test it:
+mv patch.diff coreutils-with-bug/lib/
+
+We still need to fix the firs 2 lines
+The path for the first 2 lines should be : lib/timespec.h
+The command to patch:
+
+patch < patch.diff
+make
+
+We use the same commands as before to test it:
+tmp=$(mktemp -d)
+cd $tmp
+touch -d '1918-11-11 11:00 GMT' wwi-armistice
+touch now
+sleep 1
+touch now1
+TZ=UTC0 ~/CS35L/lab4/coreutils-with-bug/src/ls -lt --full-time wwi-armistice now now1
+#This would print:
+-rw-r--r-- 1 kanisha csugrad 0 2018-02-10 04:09:47.229210336 +0000 now1
+-rw-r--r-- 1 kanisha csugrad 0 2018-02-10 04:09:41.951122094 +0000 now
+-rw-r--r-- 1 kanisha csugrad 0 1918-11-11 11:00:00.000000000 +0000 wwi-armistice
+
+So, the patch worked.
+
+
+10. We will now try this patched version on the seasnet server.
+We use the same commands as before but do not make $tmp directory.
+
+touch -d '1918-11-11 11:00 GMT' wwi-armistice
+touch now
+sleep 1
+touch now1
+TZ=UTC0 ~/CS35L/lab4/coreutils-with-bug/src/ls -lt --full-time wwi-armistice now now1
+#This would print:
+-rw-r--r-- 1 kanisha csugrad 0 2054-12-17 17:28:16.000000000 +0000 wwi-armistice
+-rw-r--r-- 1 kanisha csugrad 0 2018-02-10 04:29:07.883435000 +0000 now1
+-rw-r--r-- 1 kanisha csugrad 0 2018-02-10 04:28:54.328155000 +0000 now
+
+The year for file wwi-armistice is 2054 even though we made it for 1918.
+The seasnet uses 32 bit NFS system whereas linux file system uses 64 bit.
+Beacuse of this, the 64 bit value is truncated into 32 bit value.
+Because of this file appears to be in future (2054) instead of past(1918).
+

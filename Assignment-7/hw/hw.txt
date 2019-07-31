@@ -1,0 +1,38 @@
+Kanisha  Shah
+504-958-165
+
+Homework:
+
+
+1. Even if other teams had been observing all the bytes going across the network,
+it would be secure as they would not be able to decrypt the data. All the data sent
+over the network is first encrypted using a public key. The data can only be encrypted
+using a private key which is not sent over the network and they would never have access
+to. This means that even if they have the public key and access to the bytes, they
+do not have access to the data.
+
+(1) If keyboard is tapped, network would no longer be secure. They would know
+the passphrase (authentication of private-key) by observing the keystrokes.
+They can access the data by decrypting it using the private key. However, if the
+password verification is off and they are not logging in for the first time,
+then they would not have access to the private key and would not be able to decrypt
+the data.
+
+(2) If someone has physical control of the USB while we are booting off USB, network would
+not be secure. They would have access to .ssh folders and both the keys. They would be
+able to encrypt and decrpt all the messages using the keys.
+
+
+
+2. A signature is created and verified using the same public key. gpg --verify command
+is used to verify that the signature and the document matches and the document has not
+been modified after the signature has been made. The signature is decrypted using the public
+key and is compared to the document that is sent with the signature. This command does
+not verify the author of the signature or the public key. So, if someone intercepts
+between the sender and the receiver, that intruder can modify the document, and send his
+signature and public key instead and we would not find out.
+
+To fix this problem, we can rely on third party companies or organizations which is
+trusted by both the sender and the reciever. This third party can keep track of the
+origin of the document and its true owner. This way we can verify if we have the
+documents by the right person. 

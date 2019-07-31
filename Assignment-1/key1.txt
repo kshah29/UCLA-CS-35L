@@ -1,0 +1,239 @@
+Kanisha Shah
+UID: 504-958-165
+
+Exercise 1.1:
+1. e m a c s SP e x e r 1 . h t m l Enter
+
+2. C-s P U
+   M-f
+   
+3. C-s L a
+   M-b
+
+4. C-s s e l f
+   M-b
+
+5. C-s a r r o w
+   M-b
+
+6. C-e
+
+7. C-a
+
+8. Commands C-a and C-e can be used. 
+
+9. No
+
+10. C-x C-c
+
+
+Exercise 1.2:
+1. e m a c s SP e x e r 2 . h t m l Enter
+
+2. C-s < ! -
+   C-a
+   C-k
+
+3. C-s < !
+   C-a
+   C-k
+
+4. C-s < !
+   C-a
+   C-u 3 C-k
+
+5. C-s < !
+   C-u 3 C-b
+   C-u 7 C-d
+   C-s < !
+   C-a
+   C-k
+
+
+Exercise 1.3:
+1. e m a c s SP e x e r 3 . h t m l Enter
+
+2. C-s A
+   M-f
+   C-f
+   C-d
+   3 7
+   C-s A
+   M-f
+   C-f
+   C-d
+   3 7
+
+3. M-<
+   C-s U T
+   C-u 3 C-d
+   Backspace
+   S - A S C I I
+
+4. M-<
+   C-s < / o
+   C-a
+   E n t e r
+
+5. C-x C-s
+   C-x C-c
+   Enter y e s
+
+
+Exercise 1.4:
+1. c a t SP e x e r 2 . h t m l SP e x e r 2 . d i f f SP > e x e r 4 . h t m l Enter
+
+2. e m a c s SP e x e r 4 . h t m l Enter
+
+3. M->
+   C-u 2 C-p
+   C-f
+   C-SP
+   C-e
+   M-w
+   C-u 2 C-p
+   C-r < / h t
+   C-n
+   C-y
+
+4. M->
+   C-u 5 C-p
+   C-r < !
+   C-SP
+   C-u 7 C-f
+   M-w
+   C-p
+   C-r n u m
+   C-e
+   C-u 5 C-b
+   C-y
+
+   C-s n u m 
+   C-r < !
+   C-SP
+   C-u 2 C-n
+   C-e
+   M-w
+   C-u 5 C-p
+   C-r < h 2 > S
+   C-n
+   Enter
+   C-y
+
+   C-s < h 2 > S
+   C-r < !
+   C-SP
+   C-e
+   M-w
+   C-u 3 C-p
+   C-r < h 2 > H
+   C-u 2 C-n
+   C-y
+
+   C-s < h 2 > H
+   C-r < !
+   C-SP
+   C-e
+   M-w
+   C-u 5 C-p
+   C-r < h 2 > L
+   C-u 2 C-n
+   C-y
+
+5. C-s < / h t
+   c-u 2 C-n
+   C-a
+   C-SP
+   M->
+   C-w
+
+6. C-x u
+
+7. M-<
+   C-s < / h t
+   c-u 2 C-n
+   C-a
+   < !
+   M-% - - > Enter - - > < ! - - Enter y y y y y
+   M->
+   - - >
+
+8. M-<
+   M-%  < o l > Enter < O l > Enter y y y y y y y
+   7 instances.
+
+9. d i f f SP - u SP e x e r 1 . h t m l SP e x e r 4 . h t m l SP > e x e r 4 .d i f f 
+
+
+Exercise 1.5:
+1. e m a c s
+   M-x m k d i r Enter
+   j u n k Enter
+
+2. M-x c d Enter
+   j u n k Enter
+   C-x C-f h e l l o . c enter
+   (copy and paste source code)
+
+3. M-x c o m p i l e Enter
+   C-a
+   C-k
+   g c c SP - o SP h e l l o SP h e l l o . c
+   y
+
+4. M-x c o m p i l e Enter
+   DOWN . / h e l l o Enter
+   C-x 0 Enter
+   C-x C-w h e l l o - o u t Enter
+   
+5. C-x i
+   C-a
+   C-k
+   ~ / C S 3 5 L / l a b 1 / k e y 1 . t x t
+
+
+-*- mode: compilation; default-directory: "~/CS35L/lab1/junk/" -*-
+Compilation started at Thu Jan 11 22:45:18
+
+./hello
+#include <stdio.h>
+int
+main (void)
+{
+  char n = '\n';
+  char b = '\\';
+  char q = '"';
+  char const *p = "#include <stdio.h>%cint%cmain (void)%c{%c  char n = '%cn';%c  char b = '%c%c';%c  char q = '%c';%c  char const *p = %c%s%c;%c  printf (p, n, n, n, n, b, n, b, b, n, q, n, q, p, q, n, n, n, n);%c  return 0;%c}%c";
+  printf (p, n, n, n, n, b, n, b, b, n, q, n, q, p, q, n, n, n, n);
+  return 0;
+}
+
+Compilation finished at Thu Jan 11 22:45:18
+
+
+Exercise 1.6
+1. C-x b Enter
+
+2. ( r a n d o m ) C-j
+
+3. ( s e t q SP x SP ( r a n d o m ) ) C-j
+   ( s e t q SP y SP ( r a n d o m ) ) C-j
+
+4. ( - SP x SP y ) C-j
+   x: 1709806321295820174
+   y: 2036483713962529141
+   result: -326677392666708967
+
+5. M-: ( - SP x SP y ) Enter
+   It gives the same answer but x and y are represented in octal and hexadecimal numbers respectively.
+
+6. The random numbers produced by the computer are psuedo-random.
+   They produce the same series of random numbers everytime.
+   This happens beacuse they are produced by an algorithm whose seed value is fixed.
+
+7. Since (random) is truly random and we are calculating the difference, there would be an overflow when
+   x is +ve, y is -ve or x is -ve, y is +ve and one of them is very large.
+   Probability for getting opposite signs for x and y is 50%.
+   Further we need to consider when one of them is very large which will lead to overflow.
+
+

@@ -1,0 +1,47 @@
+Kanisha Shah
+504-958-165
+
+Homework:
+
+Q1. The removed line: "case_long_iso_time_style:" is a goto statement.
+There were only two appearances of this line. One was the definition of
+the goto statement, and another was used in the for loop. As the for loop
+was deleted, it was not necessary to remove the line inside the patch.
+The line was not used anywhere else and would have been ignored if
+not deleted.
+
+
+Q2. The patched version of Coreutils can cause problems for the non-English
+speakers. It displays date according English format which is not same
+everywhere. If the locales do not have a translation, it might produce
+undesirable results.
+
+
+Q3. When we invoke randline.py on /dev/null, we get the following error:
+Traceback (most recent call last):
+  File "./randline.py", line 70, in <module>
+    main()
+  File "./randline.py", line 64, in main
+    sys.stdout.write(generator.chooseline())
+  File "./randline.py", line 34, in chooseline
+    return random.choice(self.lines)
+  File "/usr/lib64/python2.7/random.py", line 274, in choice
+    return seq[int(self.random() * len(seq))]
+    	   # raises IndexError if seq is empty
+IndexError: list index out of range
+
+The file /dev/null is empty and the number of lines is 0. Hence, it displays
+the error that Index is out of range.The function tries to return any line at
+random, but the file is empty, so the error is raised
+
+
+Q4. If we run "randline.py" with python3 instead of python, we get the
+following error:
+  File "randline.py", line 65
+    except IOError as (errno, strerror):
+                      ^
+SyntaxError: invalid syntax
+
+The correct form is "except IOError as err:"
+Exceptions in Python 2 are iterable but has been removed in python3.
+

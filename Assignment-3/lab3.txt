@@ -1,0 +1,134 @@
+Kanisha shah
+504-958-165
+
+Laboratory:
+
+1. I type this command in my terminal to upload the tar file
+in my computer to my working directory on seas.ucla server.
+scp ~/Downloads/coreutils-7.6.tar kanisha@lnxsrv09.seas.ucla.edu:~/CS35L
+
+
+2. After that I moved my tar file to a new directory lab3 using
+mv coreutils-7.6.tar lab3
+
+Then, I installed coreutils-7.6 by following steps:
+./configure
+make
+echo $? #printed "0" - No errors, it executed successfully
+make install
+echo $? # prited "2" - did not execute successfully 
+
+The error said that ls does not have the permission to
+exceute '/usr/local/bin/./install'.
+This means that PATH needs to be added for configure command.
+We type the following commands:
+
+cd coreutils-7.6
+./configure --prefix=/u/cs/ugrad/kanisha/CS35L/lab3/coreutils-7.6
+make
+echo $? #printed "0" -> No errors
+make install
+echo $?	#printed "0" ->	No errors
+
+
+3. Find the current locale type:
+locale
+It is of the type: "en_US.UTF-8"
+So, we do not need to change it.
+
+We go inside the bin directory of the unzipped folder
+and run ls of that directory using:
+cd bin
+./ls -l
+
+Here is what we get:
+-rwxr-xr-x 1 kanisha csugrad 131496 2018-01-28 11:38 [
+-rwxr-xr-x 1 kanisha csugrad 124416 2018-01-28 11:38 base64
+
+
+4. I first looked at man page of patch to see how to apply:
+man patch
+
+To apply the patch I went to the src directory of unzipped folder
+and made a new patchfile containing the diff output
+cd ../src #this will bring to the src directory
+emacs patchfile #Now copy-paste output, save and close
+
+Here is the patch:
+--- a/src/ls.c
++++ b/src/ls.c
+@@ -2014,7 +2014,6 @@ decode_switches (int argc, char **argv)
+             break;
+
+           case long_iso_time_style:
+-          case_long_iso_time_style:
+             long_time_format[0] = long_time_format[1] = "%Y-%m-%d %H:%M";
+             break;
+
+@@ -2030,13 +2029,8 @@ decode_switches (int argc, char **argv)
+                    formats.  If not, fall back on long-iso format.  */
+                 int i;
+                 for (i = 0; i < 2; i++)
+-                  {
+-                    char const *locale_format =
+-                      dcgettext (NULL, long_time_format[i], LC_TIME);
+-                    if (locale_format == long_time_format[i])
+-                      goto case_long_iso_time_style;
+-                    long_time_format[i] = locale_format;
+-                  }
++                  long_time_format[i] =
++                    dcgettext (NULL, long_time_format[i], LC_TIME);
+               }
+           }
+       /* Note we leave %5b etc. alone so user widths/flags are honored.  */
+--
+
+
+Now that the patch file is ready, we use following commands:
+patch < patchfile
+
+It displays following:
+patching file ls.c
+Hunk #1 succeeded at 2013 (offset -1 lines).
+Hunk #2 succeeded at 2028 (offset -1 lines).
+
+echo $? #printed "0" -> No errors
+
+
+5. We now run make comand
+We first go to the unzipped tar folder
+cd .. #we are in ~/CS35L/lab3/coreutils-7.6
+make
+echo $? #printed "0" -> No errors
+
+It executed lot lesser files than previous one.
+Inside src, it only executed
+ls.o
+dir
+vdir
+ls
+Previously, it executed all the files. 
+This time it only executed the modified files.
+
+
+6. We go to the src directory and make a new file
+with old modification date
+touch -m -t 199805291000 oldfile
+Now we will test the patched ls command inside the src directory:
+./ls -l *file
+-rw-r--r-- 1 kanisha csugrad 117947 Jan 28 11:36 Makefile
+-rw-r--r-- 1 kanisha csugrad      0 May 29  1998 oldfile
+-rw-r--r-- 1 kanisha csugrad   1043 Jan 28 14:04 patchfile
+
+This is the old version of ls:
+~/CS35L/lab3/coreutils-7.6/bin/ls -l *file
+-rw-r--r-- 1 kanisha csugrad 117947 2018-01-28 11:36 Makefile
+-rw-r--r-- 1 kanisha csugrad      0 1998-05-29 10:00 oldfile
+-rw-r--r-- 1 kanisha csugrad   1043 2018-01-28 14:04 patchfile
+
+Because we used the make command and not make install,
+we only made changes to the ls file of src.
+Hence, we need to test the new ls command in the src file.
+
+
+

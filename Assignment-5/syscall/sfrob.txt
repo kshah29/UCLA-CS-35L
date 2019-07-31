@@ -1,0 +1,116 @@
+Kanisha Shah
+504-958-165
+
+
+Performance was compared for different versions of sfrob
+using time when different file sizes were inputted 
+
+* STDIN was a file of 25541 bytes and had 150 lines
+
+a) sfrobu.c without option f (unbuffered version)
+time -p ./sfrobu < as4 > out_sfrobu
+real 0.05
+user 0.00
+sys 0.03
+
+b) sfrobu.c with option f (unbuffered version)
+time -p ./sfrobu -f < as4 > out_sfrobu
+real 0.05
+user 0.01
+sys 0.04
+
+c) shell script sfrobs without option f
+time -p ./sfrobs < as4 > out_sfrobs
+real 0.01
+user 0.00
+sys 0.00
+
+d) shell script sfrobs with option f
+time -p ./sfrobs -f < as4 > out_sfrobs
+real 0.00
+user 0.00
+sys 0.00
+
+e) sfrob.c - no option (buffered version)
+time -p ./sfrob < as4 > out_sfrob
+real 0.00
+user 0.00
+sys 0.00
+
+
+* STDIN was a file of 75522 bytes and had 1019 lines
+
+a)  sfrobu.c without option f (unbuffered version)
+time -p ./sfrobu < as5 > out_sfrobu
+real 0.13
+user 0.03
+sys 0.10
+
+b) sfrobu.c with option f (unbuffered version)
+time -p ./sfrobu -f < as5 > out_sfrobu
+real 0.15
+user 0.02
+sys 0.12
+
+c) shell script sfrobs without option f
+time -p ./sfrobs < as5 > out_sfrobs
+real 0.02
+user 0.00
+sys 0.02
+
+d) shell script sfrobs with option f
+time -p ./sfrobs -f < as5 > out_sfrobs
+real 0.01
+user 0.00
+sys 0.00
+
+e) sfrob.c - no option (buffered version)
+time -p ./sfrob < as5 > out_sfrob
+real 0.01
+user 0.00
+sys 0.00
+
+
+* STDIN was a file of 1113623  bytes and had 10120 lines
+
+a)  sfrobu.c without option f (unbuffered version)
+time -p ./sfrobu < as7 > out_sfrobu
+real 2.00
+user 0.38
+sys 1.61
+
+b) sfrobu.c with option f (unbuffered version)
+time -p ./sfrobu -f < as7 > out_sfrobu
+real 2.37
+user 0.41
+sys 1.94
+
+c) shell script sfrobs without option f
+time -p ./sfrobs < as7 > out_sfrobs
+real 0.13
+user 0.08
+sys 0.06
+
+d) shell script sfrobs with option f
+time -p ./sfrobs -f < as7 > out_sfrobs
+real 0.22
+user 0.13
+sys 0.10
+
+e) sfrob.c - no option (buffered version)
+time -p ./sfrob < as7 > out_sfrob
+real 0.13
+user 0.11
+sys 0.00
+
+
+As we can see, the unbuffered version takes 18 times more time
+to run compared to shell script and sfrob.c
+sfrob.c is slightly faster than shell script sfrobs.
+Overall, sfrob.c and sfrobs performs better than sfrobu.
+
+
+
+
+
+
